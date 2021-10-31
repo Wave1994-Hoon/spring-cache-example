@@ -18,16 +18,18 @@ public class CacheConfig {
 
   @Bean
   public CacheManager cacheManager() {
-    SimpleCacheManager cacheManager = new SimpleCacheManager();
     List<CaffeineCache> caches = Arrays.stream(CacheType.values())
         .map(cache -> new CaffeineCache(cache.getCacheName(), Caffeine.newBuilder().recordStats()
-                .expireAfterWrite(cache.getExpiredAfterWrite(), TimeUnit.SECONDS)
+                .expireAfterWrite(cache.getExpireAfterWrite(), TimeUnit.SECONDS)
                 .maximumSize(cache.getMaximumSize())
                 .build()
             )
         )
         .collect(Collectors.toList());
+
+    SimpleCacheManager cacheManager = new SimpleCacheManager();
     cacheManager.setCaches(caches);
+
     return cacheManager;
   }
 
